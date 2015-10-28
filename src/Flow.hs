@@ -1,11 +1,13 @@
 {-# LANGUAGE RecordWildCards #-}
 import Haste
 import Haste.DOM
+import Haste.Events
 import Haste.Graphics.Canvas
 import Haste.Graphics.AnimationFrame
 import Haste.App (MonadIO)
 
 import Data.IORef
+import qualified Data.Set as S
 
 import Helper
 
@@ -48,12 +50,21 @@ inside w h d = let (x,y) = _loc d
 
 inside' = inside 500 500
 
+player :: Dot
+player = Dot (250,450) (0,0) (RGBA 0 250 100 0.7) 5
+
 main = do
     Just cnv <- getCanvasById "world"
     dots <- newIORef sampleDots
+    pressed <- newIORef (S.empty :: S.Set Int)
+    _ <- onEvent document KeyDown $ \k ->
+            modifyIORef' pressed (S.insert (keyCode k))
+    _ <- onEvent document KeyDown $ \k ->
+            modifyIORef' pressed (S.delete (keyCode k))
     let mainLoop t0 t1 = do
         let t = t1 - t0
         clearCanv cnv
+        renderOnTop cnv . visual $ player
         readIORef dots >>= renderDots cnv
         modifyIORef' dots (filter inside' . map (move (t/100)))
         _ <- requestAnimationFrame (mainLoop t1)
