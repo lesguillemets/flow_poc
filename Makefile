@@ -1,2 +1,2 @@
 ./build/flow.js: ./src/*.hs
-	hastec --debug --preserve-names ./src/Flow.hs -isrc -o ./build/flow.js
+	hastec --opt-all -O2 ./src/Flow.hs -isrc -o ./build/flow.js
