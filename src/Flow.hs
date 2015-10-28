@@ -89,9 +89,7 @@ main = do
         readIORef dots >>= renderDots cnv
         modifyIORef' dots (filter inside' . map (move (t/100)))
         v <- fromPressed <$> readIORef pressed
-        unless (v == (0,0)) (writeLog . show $ v)
-        modifyIORef' pl (\d -> d{_vel = v})
-        modifyIORef' pl (move (t/100))
+        modifyIORef' pl (move (t/100) . \d -> d{_vel = v})
         _ <- requestAnimationFrame (mainLoop t1)
         return ()
     _ <- requestAnimationFrame (mainLoop 0)
