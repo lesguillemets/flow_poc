@@ -1,2 +1,2 @@
 ./build/flow.js: ./src/Flow.hs
-	hastec -O2 --debug ./src/Flow.hs -o ./build/flow.js
+	hastec --debug  ./src/Flow.hs -isrc -o ./build/flow.js
