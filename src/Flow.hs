@@ -29,6 +29,13 @@ renderDots cnv = mapM_ (renderOnTop cnv . visual)
 move :: Double -> Dot -> Dot
 move t d = d{ _loc = _loc d <+> t `smul` (_vel d)}
 
+collides :: Dot -> Dot -> Bool
+collides d0 d1 = dist <= (_dia d0 + _dia d1)^(2::Int) where
+    (x0,y0) = _loc d0
+    (x1,y1) = _loc d1
+    dist = (x0-x1)^(2::Int) + (y0-y1)^(2::Int)
+
+
 -- TODO : better impl.
 clearCanv :: MonadIO m => Canvas -> m ()
 clearCanv = flip render (stroke $ circle (0,0) 0)
@@ -90,7 +97,15 @@ main = do
         modifyIORef' dots (filter inside' . map (move (t/100)))
         v <- fromPressed <$> readIORef pressed
         modifyIORef' pl (move (t/100) . \d -> d{_vel = v})
+        checkCollision pl dots
         _ <- requestAnimationFrame (mainLoop t1)
         return ()
     _ <- requestAnimationFrame (mainLoop 0)
     return ()
+
+checkCollision :: IORef Dot -> IORef [Dot] -> IO ()
+checkCollision p ds = do
+    pl <- readIORef p
+    dots <- readIORef ds
+    when (any (collides pl) dots) $ do
+        writeLog "ouch"
