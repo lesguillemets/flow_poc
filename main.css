@@ -1,0 +1,9 @@
+canvas {
+	border: 1px solid black;
+}
+
+#canv{
+	margin-left: auto;
+	margin-right: auto;
+	display:block;
+}
