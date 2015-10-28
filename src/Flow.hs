@@ -41,6 +41,12 @@ sampleDots = [
              Dot (150,190) (0,2) (RGBA   0 240 120 0.5) 15
              ]
 
+inside :: Double -> Double -> Dot -> Bool
+inside w h d = let (x,y) = _loc d
+               in
+                   0 <= x && x <= w && 0 <= y && y <= h
+
+inside' = inside 500 500
 
 main = do
     Just cnv <- getCanvasById "world"
@@ -49,7 +55,7 @@ main = do
         let t = t1 - t0
         clearCanv cnv
         readIORef dots >>= renderDots cnv
-        modifyIORef' dots (map (move 1))
+        modifyIORef' dots (filter inside' . map (move (t/100)))
         _ <- requestAnimationFrame (mainLoop t1)
         return ()
     _ <- requestAnimationFrame (mainLoop 0)
