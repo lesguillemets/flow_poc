@@ -37,7 +37,7 @@ sampleDots = [
              Dot (200,150) (0,2) (RGBA 120  40 120 0.5)  3,
              Dot (120,100) (0,2) (RGBA 120 140 120 0.5) 14,
              Dot (350,100) (0,2) (RGBA 220 240 120 0.5) 15,
-             Dot (350,190) (0,2) (RGBA 220   0 120 0.5) 15,
+             Dot (350,190) (0.2,2) (RGBA 220   0 120 0.5) 15,
              Dot (150,190) (0,2) (RGBA   0 240 120 0.5) 15
              ]
 
@@ -45,11 +45,12 @@ sampleDots = [
 main = do
     Just cnv <- getCanvasById "world"
     dots <- newIORef sampleDots
-    let mainLoop t = do
-        writeLog . show $ t
+    let mainLoop t0 t1 = do
+        let t = t1 - t0
         clearCanv cnv
         readIORef dots >>= renderDots cnv
         modifyIORef' dots (map (move 1))
-        _ <- setTimer (Once 60) (mainLoop (t+1))
+        _ <- requestAnimationFrame (mainLoop t1)
         return ()
-    mainLoop 0
+    _ <- requestAnimationFrame (mainLoop 0)
+    return ()
