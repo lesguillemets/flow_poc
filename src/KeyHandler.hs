@@ -15,18 +15,18 @@ fromPressed = foldl' (<+>) (0,0) . map keyConfig
         . S.toList . S.filter (`elem` [65,87,68,83, 37,38,39,40])
 
 keyConfig :: Int -> Vector
-keyConfig 65 = (-baseSpeed,0)
-keyConfig 87 = (0,-baseSpeed)
-keyConfig 68 = (baseSpeed,0)
-keyConfig 83 = (0,baseSpeed)
-keyConfig 37 = (-baseSpeed,0)
-keyConfig 38 = (0,-baseSpeed)
-keyConfig 39 = (baseSpeed,0)
-keyConfig 40 = (0,baseSpeed)
+keyConfig 65 = (-baseAccel,0)
+keyConfig 87 = (0,-baseAccel)
+keyConfig 68 = (baseAccel,0)
+keyConfig 83 = (0,baseAccel)
+keyConfig 37 = (-baseAccel,0)
+keyConfig 38 = (0,-baseAccel)
+keyConfig 39 = (baseAccel,0)
+keyConfig 40 = (0,baseAccel)
 keyConfig _ = (0,0)
 
-baseSpeed :: Double
-baseSpeed = 10
+baseAccel :: Double
+baseAccel = 5
 
 addKeyHandler :: IORef (S.Set Int) -> IO (HandlerInfo, HandlerInfo)
 addKeyHandler pressed = do

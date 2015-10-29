@@ -36,6 +36,10 @@ inside' = inside 500 500
 player :: Dot
 player = Dot (250,450) (0,0) (RGBA 0 250 100 0.7) 5
 
+maxPlayerSpeed :: Double
+maxPlayerSpeed = 30
+accel' = accel maxPlayerSpeed
+
 main = do
     Just cnv <- getCanvasById "world"
     dots <- newIORef sampleDots
@@ -48,8 +52,10 @@ main = do
         readIORef pl >>= renderOnTop cnv . visual
         readIORef dots >>= renderDots cnv
         modifyIORef' dots (filter inside' . map (move (t/100)))
-        v <- fromPressed <$> readIORef pressed
-        modifyIORef' pl (move (t/100) . \d -> d{_vel = v})
+        a <- fromPressed <$> readIORef pressed
+        if (a /= (0,0))
+            then modifyIORef' pl (move (t/100) . accel' ((t/100) `smul` a))
+            else modifyIORef' pl (move (t/100) . slow 10)
         checkCollision pl dots
         _ <- requestAnimationFrame (mainLoop t1)
         return ()
