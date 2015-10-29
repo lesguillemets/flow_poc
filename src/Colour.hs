@@ -1,4 +1,4 @@
-module Data.Colour (
+module Colour (
                    fromHSV
                    )where
 import Haste.Graphics.Canvas (Color(..))
