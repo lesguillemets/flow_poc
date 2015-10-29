@@ -12,6 +12,7 @@ import qualified Data.Set as S
 
 import Base
 import Helper
+import KeyHandler
 
 
 -- TODO : better impl.
@@ -35,33 +36,12 @@ inside' = inside 500 500
 player :: Dot
 player = Dot (250,450) (0,0) (RGBA 0 250 100 0.7) 5
 
-fromPressed :: S.Set Int -> Vector
-fromPressed = foldl' (<+>) (0,0) . map keyConfig
-        . S.toList . S.filter (`elem` [65,87,68,83, 37,38,39,40])
-
-baseSpeed :: Double
-baseSpeed = 10
-
-keyConfig :: Int -> Vector
-keyConfig 65 = (-baseSpeed,0)
-keyConfig 87 = (0,-baseSpeed)
-keyConfig 68 = (baseSpeed,0)
-keyConfig 83 = (0,baseSpeed)
-keyConfig 37 = (-baseSpeed,0)
-keyConfig 38 = (0,-baseSpeed)
-keyConfig 39 = (baseSpeed,0)
-keyConfig 40 = (0,baseSpeed)
-keyConfig _ = (0,0)
-
 main = do
     Just cnv <- getCanvasById "world"
     dots <- newIORef sampleDots
     pressed <- newIORef (S.empty :: S.Set Int)
     pl <- newIORef player
-    _ <- onEvent document KeyDown $ \k ->
-            modifyIORef' pressed (S.insert (keyCode k))
-    _ <- onEvent document KeyUp $ \k ->
-            modifyIORef' pressed (S.delete (keyCode k))
+    _ <- addKeyHandler pressed
     let mainLoop t0 t1 = do
         let t = t1 - t0
         clearCanv cnv
