@@ -13,23 +13,12 @@ import qualified Data.Set as S
 import Base
 import Helper
 import KeyHandler
+import Spawn
 
 
 -- TODO : better impl.
 clearCanv :: MonadIO m => Canvas -> m ()
 clearCanv = flip render (stroke $ circle (0,0) 0)
-
-sampleDots :: [Dot]
-sampleDots = [
-             Dot (250,50)  (0,2) (RGBA  20  40 120 0.5) 10,
-             Dot (280,90)  (0,2) (RGBA 120  40 120 0.5)  8,
-             Dot (280,30)  (0,2) (RGBA 220 220   0 0.5) 12,
-             Dot (200,150) (0,2) (RGBA 120  40 120 0.5)  3,
-             Dot (120,100) (0,2) (RGBA 120 140 120 0.5) 14,
-             Dot (350,100) (0,2) (RGBA 220 240 120 0.5) 15,
-             Dot (350,190) (0.2,2) (RGBA 220   0 120 0.5) 15,
-             Dot (150,190) (0,2) (RGBA   0 240 120 0.5) 15
-             ]
 
 inside' = inside 500 500
 
@@ -47,7 +36,9 @@ accel' = accel maxPlayerSpeed
 
 main = do
     Just cnv <- getCanvasById "world"
-    dots <- newIORef sampleDots
+    seed <- newSeed
+    let (initDots, s') = spawnN defaultSpConfig seed 50
+    dots <- newIORef initDots
     pressed <- newIORef (S.empty :: S.Set Int)
     pl <- newIORef player
     _ <- addKeyHandler pressed
