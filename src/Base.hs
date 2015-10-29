@@ -1,17 +1,8 @@
 {-# LANGUAGE RecordWildCards #-}
 module Base where
 
-import Haste
-import Haste.DOM
-import Haste.Events
 import Haste.Graphics.Canvas
-import Haste.Graphics.AnimationFrame
 import Haste.App (MonadIO)
-
-import Control.Monad
-import Data.IORef
-import Data.List
-import qualified Data.Set as S
 
 import Helper
 
