@@ -55,7 +55,7 @@ main = do
         a <- fromPressed <$> readIORef pressed
         if (a /= (0,0))
             then modifyIORef' pl (move (t/100) . accel' ((t/100) `smul` a))
-            else modifyIORef' pl (move (t/100) . slow 10)
+            else modifyIORef' pl (move (t/100) . slow 0.9)
         checkCollision pl dots
         _ <- requestAnimationFrame (mainLoop t1)
         return ()

@@ -34,7 +34,7 @@ fitIn d v@(x,y) = let
                   else (sqrt $ d/s)`smul` v
 
 slow :: Double -> Dot -> Dot
-slow _ d@Dot{..} = d { _vel = 0.9 `smul` _vel}
+slow x d@Dot{..} = d { _vel = x `smul` _vel}
 
 
 collides :: Dot -> Dot -> Bool
