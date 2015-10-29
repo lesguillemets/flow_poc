@@ -34,7 +34,12 @@ sampleDots = [
 inside' = inside 500 500
 
 player :: Dot
-player = Dot (250,450) (0,0) (RGBA 0 250 100 0.7) 5
+player = Dot (250,450) (0,0) normalColor 5
+
+normalColor :: Color
+normalColor = RGBA 0 250 100 0.7
+hitColor :: Color
+hitColor = RGBA 230 150 100 0.7
 
 maxPlayerSpeed :: Double
 maxPlayerSpeed = 30
@@ -66,5 +71,9 @@ checkCollision :: IORef Dot -> IORef [Dot] -> IO ()
 checkCollision p ds = do
     pl <- readIORef p
     dots <- readIORef ds
-    when (any (collides pl) dots) $ do
-        writeLog "ouch"
+    if any (collides pl) dots
+        then do
+            writeLog "ouch"
+            modifyIORef' p (\d -> d{_color = hitColor})
+        else
+            modifyIORef' p (\d -> d{_color = normalColor})
