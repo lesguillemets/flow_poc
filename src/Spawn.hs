@@ -1,4 +1,4 @@
-module Spawn (spawn, spawnN, defaultSpConfig) where
+module Spawn (spawn, spawnN, defaultSpConfig, upSpConfig) where
 
 import Haste
 
@@ -12,6 +12,7 @@ data SpawnConfig = SpConfig {
 }
 
 defaultSpConfig = SpConfig 500 250
+upSpConfig = SpConfig 500 10
 
 -- TODO : monadic
 spawn :: SpawnConfig -> Seed -> (Dot, Seed)

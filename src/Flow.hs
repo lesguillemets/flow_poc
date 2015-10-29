@@ -36,11 +36,12 @@ accel' = accel maxPlayerSpeed
 
 main = do
     Just cnv <- getCanvasById "world"
-    seed <- newSeed
-    let (initDots, s') = spawnN defaultSpConfig seed 50
+    se <- newSeed
+    let (initDots, s') = spawnN defaultSpConfig se 50
     dots <- newIORef initDots
     pressed <- newIORef (S.empty :: S.Set Int)
     pl <- newIORef player
+    seed <- newIORef s'
     _ <- addKeyHandler pressed
     let mainLoop t0 t1 = do
         let t = t1 - t0
@@ -52,11 +53,24 @@ main = do
         if (a /= (0,0))
             then modifyIORef' pl (move (t/100) . accel' ((t/100) `smul` a))
             else modifyIORef' pl (move (t/100) . slow 0.9)
+        replenishDots 50 dots seed
         checkCollision pl dots
         _ <- requestAnimationFrame (mainLoop t1)
         return ()
     _ <- requestAnimationFrame (mainLoop 0)
     return ()
+
+replenishDots n d s = do
+    se <- readIORef s
+    dots <- readIORef d
+    writeLog "HI"
+    let
+        num = max 0 $ n - length dots
+        (newDots,s') = spawnN upSpConfig se num
+    modifyIORef' d (newDots ++)
+    modifyIORef' s (const s')
+    writeLog "HI"
+
 
 checkCollision :: IORef Dot -> IORef [Dot] -> IO ()
 checkCollision p ds = do
