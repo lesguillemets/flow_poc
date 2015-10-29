@@ -60,16 +60,15 @@ main = do
     _ <- requestAnimationFrame (mainLoop 0)
     return ()
 
+-- FIXME
 replenishDots n d s = do
-    se <- readIORef s
+    sed <- readIORef s
     dots <- readIORef d
-    writeLog "HI"
     let
         num = max 0 $ n - length dots
-        (newDots,s') = spawnN upSpConfig se num
-    modifyIORef' d (newDots ++)
+        (newDot,s') = spawn upSpConfig sed
+    when (num /= 0) $ modifyIORef' d (newDot :)
     modifyIORef' s (const s')
-    writeLog "HI"
 
 
 checkCollision :: IORef Dot -> IORef [Dot] -> IO ()
