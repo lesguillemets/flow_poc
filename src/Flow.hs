@@ -53,7 +53,7 @@ main = do
         if (a /= (0,0))
             then modifyIORef' pl (move (t/100) . accel' ((t/100) `smul` a))
             else modifyIORef' pl (move (t/100) . slow 0.9)
-        replenishDots 50 dots seed
+        replenishDots 100 dots seed
         checkCollision pl dots
         _ <- requestAnimationFrame (mainLoop t1)
         return ()
